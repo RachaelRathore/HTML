@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaker Processor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styling for the slider track and thumb */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-black flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Menu Button (Top Left) -->
+    <button id="menu-btn" class="fixed top-4 left-4 z-50 text-white p-2 focus:outline-none">
+        <!-- SVG for a simple hamburger menu icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+
+    <!-- Sidebar Menu -->
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900 shadow-xl transform -translate-x-full transition-transform duration-300 z-40">
+        <div class="p-6">
+            <h2 class="text-white text-2xl font-bold mb-6">Navigation</h2>
+            <ul class="space-y-4">
+                <li><a href="#" class="block text-gray-300 hover:text-white transition-colors duration-200 text-lg" onclick="showContent('main-title-section')">Home</a></li>
+                <li><a href="#" class="block text-gray-300 hover:text-white transition-colors duration-200 text-lg" onclick="showContent('master-volume-section')">Master Volume</a></li>
+                <li><a href="#" class="block text-gray-300 hover:text-white transition-colors duration-200 text-lg" onclick="showContent('hpf-section')">HPF</a></li>
+                <li><a href="#" class="block text-gray-300 hover:text-white transition-colors duration-200 text-lg" onclick="showContent('lpf-section')">LPF</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Page Content -->
+    <div class="text-center p-8 mt-16">
+        <!-- Main title of the page -->
+        <div id="main-title-section" class="flex flex-col items-center justify-center h-[calc(100vh-120px)]">
+            <h1 class="text-white text-4xl sm:text-5xl md:text-6xl font-bold rounded-lg mb-8">
+                Speaker Processor
+            </h1>
+        </div>
+        
+
+        <!-- Master Volume section -->
+        <div id="master-volume-section" class="content-section bg-gray-800 p-6 rounded-xl shadow-lg mb-8 w-full max-w-sm hidden">
+            <h2 class="text-white text-3xl font-bold mb-4">Master Volume</h2>
+            <input type="range" id="volume-slider" min="0" max="100" value="50" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-white">
+            <p class="text-white text-xl sm:text-2xl mt-4">Volume: <span id="volume-value">50</span></p>
+        </div>
+
+        <!-- HPF section -->
+        <div id="hpf-section" class="content-section bg-gray-800 p-6 rounded-xl shadow-lg mb-8 w-full max-w-sm hidden">
+            <h2 class="text-white text-3xl font-bold mb-4">HPF</h2>
+            <p class="text-white text-6xl sm:text-7xl font-extrabold">80</p>
+        </div>
+
+        <!-- LPF section -->
+        <div id="lpf-section" class="content-section bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-sm hidden">
+            <h2 class="text-white text-3xl font-bold mb-4">LPF</h2>
+            <p class="text-white text-6xl sm:text-7xl font-extrabold">80</p>
+        </div>
+    </div>
+
+    <script>
+        // Get the slider and the span element to display the volume value
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeValue = document.getElementById('volume-value');
+        
+        // Get the menu button and the sidebar
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        // Function to show a specific section and hide others
+        function showContent(sectionId) {
+            // Get all content sections
+            const sections = document.querySelectorAll('#main-title-section, #master-volume-section, #hpf-section, #lpf-section');
+            
+            // Hide all sections
+            sections.forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show the selected section
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.remove('hidden');
+            }
+
+            // Hide the sidebar after a selection is made
+            sidebar.classList.add('-translate-x-full');
+        }
+
+        // Add an event listener to update the volume value display as the slider moves
+        volumeSlider.addEventListener('input', function() {
+            volumeValue.textContent = this.value;
+        });
+
+        // Add an event listener to toggle the sidebar visibility
+        menuBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Add event listeners to hide the sidebar when a link is clicked
+        document.querySelectorAll('#sidebar a').forEach(link => {
+            link.addEventListener('click', () => {
+                sidebar.classList.add('-translate-x-full');
+            });
+        });
+
+        // Show the main title section by default on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showContent('main-title-section');
+        });
+
+    </script>
+</body>
+</html>
